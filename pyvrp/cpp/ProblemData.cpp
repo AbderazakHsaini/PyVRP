@@ -256,6 +256,8 @@ ProblemData::VehicleType::VehicleType(size_t numAvailable,
                                       size_t profile,
                                       std::optional<Duration> startLate,
                                       std::vector<Load> initialLoad,
+                                      std::vector<Load> DeltaH,  // Add DeltaH
+                                      std::vector<Cost> Conso,   // Add Conso
                                       std::string name)
     : numAvailable(numAvailable),
       startDepot(startDepot),
@@ -271,6 +273,8 @@ ProblemData::VehicleType::VehicleType(size_t numAvailable,
       profile(profile),
       startLate(startLate.value_or(twLate)),
       initialLoad(pad(initialLoad, capacity)),
+      DeltaH(DeltaH),  // Initialize DeltaH
+      Conso(Conso),    // Initialize Conso
       name(duplicate(name.data()))
 {
     if (numAvailable == 0)
@@ -326,6 +330,8 @@ ProblemData::VehicleType::VehicleType(VehicleType const &vehicleType)
       profile(vehicleType.profile),
       startLate(vehicleType.startLate),
       initialLoad(vehicleType.initialLoad),
+      DeltaH(vehicleType.DeltaH),  // Copy DeltaH
+      Conso(vehicleType.Conso),    // Copy Conso
       name(duplicate(vehicleType.name))
 {
 }
@@ -345,6 +351,8 @@ ProblemData::VehicleType::VehicleType(VehicleType &&vehicleType)
       profile(vehicleType.profile),
       startLate(vehicleType.startLate),
       initialLoad(vehicleType.initialLoad),
+      DeltaH(std::move(vehicleType.DeltaH)),  // Move DeltaH      TO VERIFY
+      Conso(std::move(vehicleType.Conso)),    // Move Conso       TO VERIFY
       name(vehicleType.name)  // we can steal
 {
     vehicleType.name = nullptr;  // stolen
@@ -367,7 +375,10 @@ ProblemData::VehicleType::replace(std::optional<size_t> numAvailable,
                                   std::optional<size_t> profile,
                                   std::optional<Duration> startLate,
                                   std::optional<std::vector<Load>> initialLoad,
+                                  std::optional<std::vector<Load>> DeltaH,  // Add DeltaH
+                                  std::optional<std::vector<Cost>> Conso,   // Add Conso
                                   std::optional<std::string> name) const
+                                                                    
 {
     return {numAvailable.value_or(this->numAvailable),
             capacity.value_or(this->capacity),
@@ -383,6 +394,8 @@ ProblemData::VehicleType::replace(std::optional<size_t> numAvailable,
             profile.value_or(this->profile),
             startLate.value_or(this->startLate),
             initialLoad.value_or(this->initialLoad),
+            DeltaH.value_or(this->DeltaH),  // Replace DeltaH
+            Conso.value_or(this->Conso),    // Replace Conso
             name.value_or(this->name)};
 }
 
@@ -403,6 +416,8 @@ bool ProblemData::VehicleType::operator==(VehicleType const &other) const
         && profile == other.profile
         && startLate == other.startLate
         && initialLoad == other.initialLoad
+        && DeltaH == other.DeltaH  // Compare DeltaH
+        && Conso == other.Conso    // Compare Conso
         && std::strcmp(name, other.name) == 0;
     // clang-format on
 }
