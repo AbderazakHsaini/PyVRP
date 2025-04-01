@@ -238,6 +238,8 @@ PYBIND11_MODULE(_pyvrp, m)
                       size_t,
                       std::optional<pyvrp::Duration>,
                       std::vector<pyvrp::Load>,
+                      std::vector<pyvrp::Load>,  // Add DeltaH
+                      std::vector<pyvrp::Cost>,  // Add Conso
                       char const *>(),
              py::arg("num_available") = 1,
              py::arg("capacity") = py::list(),
@@ -255,6 +257,8 @@ PYBIND11_MODULE(_pyvrp, m)
              py::arg("profile") = 0,
              py::arg("start_late") = py::none(),
              py::arg("initial_load") = py::list(),
+             py::arg("DeltaH") = py::list(),  // Add DeltaH
+             py::arg("Conso") = py::list(),  // Add Conso
              py::kw_only(),
              py::arg("name") = "")
         .def_readonly("num_available", &ProblemData::VehicleType::numAvailable)
@@ -273,6 +277,8 @@ PYBIND11_MODULE(_pyvrp, m)
         .def_readonly("profile", &ProblemData::VehicleType::profile)
         .def_readonly("start_late", &ProblemData::VehicleType::startLate)
         .def_readonly("initial_load", &ProblemData::VehicleType::initialLoad)
+        .def_readonly("DeltaH", &ProblemData::VehicleType::DeltaH)  // Expose DeltaH
+        .def_readonly("Conso", &ProblemData::VehicleType::Conso)    // Expose Conso
         .def_readonly("name",
                       &ProblemData::VehicleType::name,
                       py::return_value_policy::reference_internal)
@@ -292,6 +298,8 @@ PYBIND11_MODULE(_pyvrp, m)
              py::arg("profile") = py::none(),
              py::arg("start_late") = py::none(),
              py::arg("initial_load") = py::none(),
+             py::arg("DeltaH") = py::none(),  // Add DeltaH
+             py::arg("Conso") = py::none(),   // Add Conso
              py::kw_only(),
              py::arg("name") = py::none(),
              DOC(pyvrp, ProblemData, VehicleType, replace))
@@ -312,6 +320,8 @@ PYBIND11_MODULE(_pyvrp, m)
                                       vehicleType.profile,
                                       vehicleType.startLate,
                                       vehicleType.initialLoad,
+                                      vehicleType.DeltaH,  // Serialize DeltaH
+                                      vehicleType.Conso,   // Serialize Conso
                                       vehicleType.name);
             },
             [](py::tuple t) {  // __setstate__
@@ -325,12 +335,14 @@ PYBIND11_MODULE(_pyvrp, m)
                     t[6].cast<pyvrp::Duration>(),           // tw late
                     t[7].cast<pyvrp::Duration>(),           // max duration
                     t[8].cast<pyvrp::Distance>(),           // max distance
-                    t[9].cast<pyvrp::Cost>(),       // unit distance cost
-                    t[10].cast<pyvrp::Cost>(),      // unit duration cost
-                    t[11].cast<size_t>(),           // profile
-                    t[12].cast<pyvrp::Duration>(),  // start late
-                    t[13].cast<std::vector<pyvrp::Load>>(),  // initial load
-                    t[14].cast<std::string>());              // name
+                    t[9].cast<pyvrp::Cost>(),               // unit distance cost
+                    t[10].cast<pyvrp::Cost>(),              // unit duration cost
+                    t[11].cast<size_t>(),                   // profile
+                    t[12].cast<pyvrp::Duration>(),          // start late
+                    t[13].cast<std::vector<pyvrp::Load>>(), // initial load
+                    t[14].cast<std::vector<pyvrp::Load>>(), // DeltaH
+                    t[15].cast<std::vector<pyvrp::Cost>>(), // Conso
+                    t[16].cast<std::string>());             // name
 
                 return vehicleType;
             }))
