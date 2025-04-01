@@ -434,6 +434,10 @@ public:
      * initial_load
      *     Load already on the vehicle that need to be dropped off at a depot.
      *     This load is present irrespective of any client visits.
+     * DeltaH
+     *     New attribute: DeltaH
+     * Conso
+     *     New attribute: Conso
      * name
      *     Free-form name field for this vehicle type.
      */
@@ -447,12 +451,14 @@ public:
         Duration const twLate;             // End of shift
         Duration const maxDuration;        // Maximum route duration
         Distance const maxDistance;        // Maximum route distance
-        Cost const fixedCost;         // Fixed cost of using this vehicle type
-        Cost const unitDistanceCost;  // Variable cost per unit of distance
-        Cost const unitDurationCost;  // Variable cost per unit of duration
-        size_t const profile;         // Distance and duration profile
-        Duration const startLate;     // Latest start of shift
+        Cost const fixedCost;              // Fixed cost of using this vehicle type
+        Cost const unitDistanceCost;       // Variable cost per unit of distance
+        Cost const unitDurationCost;       // Variable cost per unit of duration
+        size_t const profile;              // Distance and duration profile
+        Duration const startLate;          // Latest start of shift
         std::vector<Load> const initialLoad;  // Initially used capacity
+        std::vector<Load> const DeltaH;       // New attribute: DeltaH
+        std::vector<Cost> const Conso;        // New attribute: Conso
         char const *name;                     // Type name (for reference)
 
         VehicleType(size_t numAvailable = 1,
@@ -469,6 +475,8 @@ public:
                     size_t profile = 0,
                     std::optional<Duration> startLate = std::nullopt,
                     std::vector<Load> initialLoad = {},
+                    std::vector<Load> DeltaH = {},  // Initialize DeltaH
+                    std::vector<Cost> Conso = {},   // Initialize Conso
                     std::string name = "");
 
         bool operator==(VehicleType const &other) const;
@@ -499,6 +507,8 @@ public:
                             std::optional<size_t> profile,
                             std::optional<Duration> startLate,
                             std::optional<std::vector<Load>> initialLoad,
+                            std::optional<std::vector<Load>> DeltaH,  // Add DeltaH
+                            std::optional<std::vector<Cost>> Conso,   // Add Conso
                             std::optional<std::string> name) const;
     };
 
