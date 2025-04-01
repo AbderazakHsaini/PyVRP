@@ -120,6 +120,8 @@ class VehicleType:
     profile: int
     start_late: int
     initial_load: list[int]
+    DeltaH: list[int]  # New attribute: DeltaH
+    Conso: list[int]   # New attribute: Conso
     name: str
     def __init__(
         self,
@@ -137,6 +139,8 @@ class VehicleType:
         profile: int = 0,
         start_late: int | None = None,
         initial_load: list[int] = [],
+        DeltaH: list[int] = [],  # Add DeltaH
+        Conso: list[int] = [],   # Add Conso
         *,
         name: str = "",
     ) -> None: ...
@@ -156,6 +160,8 @@ class VehicleType:
         profile: int | None = None,
         start_late: int | None = None,
         initial_load: list[int] | None = None,
+        DeltaH: list[int] | None = None,  # Add DeltaH
+        Conso: list[int] | None = None,   # Add Conso
         *,
         name: str | None = None,
     ) -> VehicleType: ...

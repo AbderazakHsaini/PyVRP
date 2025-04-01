@@ -336,6 +336,8 @@ class Model:
         profile: Profile | None = None,
         start_late: int | None = None,
         initial_load: int | list[int] = [],
+        DeltaH: int | list[int] = [],  # Add DeltaH
+        Conso: int | list[int] = [],   # Add Conso
         *,
         name: str = "",
     ) -> VehicleType:
@@ -379,6 +381,14 @@ class Model:
         if isinstance(init_load, int):
             init_load = [init_load]
 
+        delta_h = DeltaH
+        if isinstance(delta_h, int):
+            delta_h = [delta_h]
+
+        conso = Conso
+        if isinstance(conso, int):
+            conso = [conso]
+
         vehicle_type = VehicleType(
             num_available=num_available,
             capacity=[capacity] if isinstance(capacity, int) else capacity,
@@ -394,6 +404,8 @@ class Model:
             profile=profile_idx,
             start_late=start_late,
             initial_load=init_load,
+            DeltaH=delta_h,  # Pass DeltaH
+            Conso=conso,     # Pass Conso
             name=name,
         )
 
