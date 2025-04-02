@@ -77,6 +77,7 @@ private:
     Duration startTime_ = 0;        // (earliest) start time of this route
     Duration slack_ = 0;            // Total time slack on this route
     Cost prizes_ = 0;               // Total value of prizes on this route
+    Cost fuelConsumption_ = 0;      // Total fuel consumption for the route
 
     std::pair<double, double> centroid_;  // Route center
     VehicleType vehicleType_;             // Type of vehicle
@@ -256,6 +257,11 @@ public:
      * constraints.
      */
     [[nodiscard]] bool hasTimeWarp() const;
+
+    /**
+     * Returns the total fuel consumption for this route.
+     */
+    [[nodiscard]] Cost fuelConsumption() const;
 
     bool operator==(Route const &other) const;
 

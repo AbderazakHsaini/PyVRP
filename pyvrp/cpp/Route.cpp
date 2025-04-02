@@ -53,6 +53,9 @@ Route::Route(ProblemData const &data, Visits visits, size_t const vehicleType)
     auto const &distances = data.distanceMatrix(vehType.profile);
     auto const &durations = data.durationMatrix(vehType.profile);
 
+    // Initialize fuel consumption
+    Cost fuelConsumption = 0;
+
     for (size_t prevClient = startDepot_; auto const client : visits_)
     {
         ProblemData::Client const &clientData = data.location(client);
@@ -72,6 +75,24 @@ Route::Route(ProblemData const &data, Visits visits, size_t const vehicleType)
         {
             auto const clientLs = LoadSegment(clientData, dim);
             loadSegments[dim] = LoadSegment::merge(loadSegments[dim], clientLs);
+        }
+
+        // Calculate fuel consumption based on weight intervals
+        Load currentLoad = 0;
+        for (size_t dim = 0; dim != data.numLoadDimensions(); ++dim)
+        {
+            currentLoad += loadSegments[dim].load();
+        }
+
+        // Determine the weight interval and apply the corresponding fuel rate
+        for (size_t h = 0; h < vehType.DeltaH.size(); ++h)
+        {
+            if (currentLoad >= vehType.DeltaH[h] &&
+                (h == vehType.DeltaH.size() - 1 || currentLoad < vehType.DeltaH[h + 1]))
+            {
+                fuelConsumption += vehType.Conso[h] * distances(prevClient, client);
+                break;
+            }
         }
 
         prevClient = client;
@@ -126,6 +147,9 @@ Route::Route(ProblemData const &data, Visits visits, size_t const vehicleType)
         now += clientData.serviceDuration;
         prevClient = client;
     }
+
+    // Store the calculated fuel consumption
+    fuelConsumption_ = fuelConsumption;
 }
 
 Route::Route(Visits visits,
@@ -249,6 +273,11 @@ bool Route::hasExcessLoad() const
 bool Route::hasExcessDistance() const { return excessDistance_ > 0; }
 
 bool Route::hasTimeWarp() const { return timeWarp_ > 0; }
+
+Cost Route::fuelConsumption() const
+{
+    return fuelConsumption_;
+}
 
 bool Route::operator==(Route const &other) const
 {

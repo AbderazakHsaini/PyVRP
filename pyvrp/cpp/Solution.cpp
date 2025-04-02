@@ -24,6 +24,8 @@ void Solution::evaluate(ProblemData const &data)
         allPrizes += client.prize;
 
     excessLoad_ = std::vector<Load>(data.numLoadDimensions(), 0);
+    fuelConsumption_ = 0;  // Initialize total fuel consumption
+
     for (auto const &route : routes_)
     {
         // Whole solution statistics.
@@ -36,6 +38,9 @@ void Solution::evaluate(ProblemData const &data)
         excessDistance_ += route.excessDistance();
         timeWarp_ += route.timeWarp();
         fixedVehicleCost_ += data.vehicleType(route.vehicleType()).fixedCost;
+
+        // Aggregate fuel consumption from all routes
+        fuelConsumption_ += route.fuelConsumption();
 
         auto const &excessLoad = route.excessLoad();
         for (size_t dim = 0; dim != data.numLoadDimensions(); ++dim)
@@ -102,6 +107,11 @@ Cost Solution::prizes() const { return prizes_; }
 Cost Solution::uncollectedPrizes() const { return uncollectedPrizes_; }
 
 Duration Solution::timeWarp() const { return timeWarp_; }
+
+Cost Solution::fuelConsumption() const
+{
+    return fuelConsumption_;
+}
 
 void Solution::makeNeighbours(ProblemData const &data)
 {

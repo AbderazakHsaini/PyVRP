@@ -71,6 +71,7 @@ class CostEvaluator
     std::vector<double> loadPenalties_;  // per load dimension
     double twPenalty_;
     double distPenalty_;
+    double fuelPenalty_;  // Penalty weight for fuel consumption
 
     /**
      * Computes the cost penalty incurred from the given excess loads. This is
@@ -82,7 +83,8 @@ class CostEvaluator
 public:
     CostEvaluator(std::vector<double> loadPenalties,
                   double twPenalty,
-                  double distPenalty);
+                  double distPenalty,
+                  double fuelPenalty);  // Add fuel penalty to constructor
 
     /**
      * Computes the total excess load penalty for the given load and vehicle
@@ -182,6 +184,12 @@ public:
     bool deltaCost(Cost &out,
                    T<uArgs...> const &uProposal,
                    T<vArgs...> const &vProposal) const;
+
+    double evaluate(Cost distanceCost,
+                    Cost durationCost,
+                    Cost excessLoadCost,
+                    Cost timeWarpCost,
+                    Cost fuelConsumptionCost) const;  // Add fuel cost
 };
 
 Cost CostEvaluator::excessLoadPenalties(

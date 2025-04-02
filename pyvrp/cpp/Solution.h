@@ -73,6 +73,9 @@ class Solution
     Solution &operator=(Solution const &other) = default;
     Solution &operator=(Solution &&other) = default;
 
+private:
+    Cost fuelConsumption_ = 0;  // Total fuel consumption for the solution
+
 public:
     // Solution is empty when it has no routes and no clients.
     [[nodiscard]] bool empty() const;
@@ -214,6 +217,8 @@ public:
      */
     [[nodiscard]] Duration timeWarp() const;
 
+    [[nodiscard]] Cost fuelConsumption() const;
+
     bool operator==(Solution const &other) const;
 
     Solution(Solution const &other) = default;
@@ -226,16 +231,16 @@ public:
      *
      * Parameters
      * ----------
-     * data
-     *     Data instance.
-     * rng
-     *     Random number generator to use.
-     *
-     * Returns
-     * -------
-     * Solution
-     *     The randomly generated solution.
-     */
+ * data
+ *     Data instance.
+ * rng
+ *     Random number generator to use.
+ *
+ * Returns
+ * -------
+ * Solution
+ *     The randomly generated solution.
+ */
     Solution(ProblemData const &data, RandomNumberGenerator &rng);
 
     // This constructs from the given lists of client indices. Assumes all
