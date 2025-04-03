@@ -4,6 +4,7 @@
 #include "Measure.h"
 #include "ProblemData.h"
 #include "RandomNumberGenerator.h"
+#include "CostSegment.h"  // Include CostSegment
 
 #include <iosfwd>
 #include <optional>
@@ -83,6 +84,8 @@ private:
     VehicleType vehicleType_;             // Type of vehicle
     Depot startDepot_;                    // Assigned start depot
     Depot endDepot_;                      // Assigned end depot
+
+    CostSegment costSegment_;  // Cost segment for managing fuel consumption
 
 public:
     [[nodiscard]] bool empty() const;
